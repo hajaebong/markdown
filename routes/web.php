@@ -14,3 +14,9 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('lessons/{file?}', function($file = null) {
+    $text = (new App\Document)->get($file);
+
+    return app(ParsedownExtra::class)->text($text);
+});
