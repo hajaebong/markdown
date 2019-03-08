@@ -6,25 +6,27 @@ use Illuminate\Support\Facades\File;
 
 class Document
 {
-    private $directory = 'lessons';
-
-    public function get($file = null)
+    public function get($file = 'documentation.md')
     {
-        $file = is_null($file) ? 'index.md' : $file;
-        if (! File::exists($this->getPath($file))) {
-            abort(404, 'File not exist');
+        $content = File::get($this->Path($file));
+
+        return $this->replaceLinks($content);
+    }
+
+    private function Path($file)
+    {
+        $file = ends_with($file, '.md') ? $file : $file . '.md';
+        $path = base_path('docs'. DIRECTORY_SEPARATOR . $file);
+
+        if(!File::exists($path)){
+            abort(404, '요청하신 파일이 없습니다.');
         }
 
-        return File::get($this->getPath($file));
+        return $path;
     }
 
-    private function getPath($file)
+    protected function replaceLinks($content)
     {
-        return base_path($this->directory . DIRECTORY_SEPARATOR . $file);
-    }
-
-    public function render($request, \Exception $e)
-    {
-
+        return str_replace('/docs/{{version}}', '/docs', $content);
     }
 }
