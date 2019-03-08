@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -46,6 +47,12 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException or $exception instanceof NotFoundHttpException){
+            return response(view('errors.notice',[
+                'title' => 'Page Not Found',
+                'description' => 'Sorry, the page or resource you trying to view does not exist.'
+            ]), 404);
+        }
         return parent::render($request, $exception);
     }
 }
