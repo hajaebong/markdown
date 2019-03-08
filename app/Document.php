@@ -22,4 +22,9 @@ class Document
     {
         return base_path($this->directory . DIRECTORY_SEPARATOR . $file);
     }
+
+    public function render($request, \Exception $e)
+    {
+
+    }
 }
